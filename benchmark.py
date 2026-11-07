@@ -4,16 +4,14 @@ A benchmarking script to test and compare open-weights models running
 locally via Ollama, measuring latency, token generation speed, and response quality.
 """
 
-# ==============================================================================
-# MODULE IMPORTS (External toolboxes we bring into this script)
-# ==============================================================================
 import sys
+from datetime import datetime
+from pathlib import Path
+
 import ollama           # Official Python client for local Ollama server
 from tabulate import tabulate  # Formats lists/data into clean display tables
 
-# ==============================================================================
-# CONFIGURATION VARIABLES (List and string objects)
-# ==============================================================================
+
 # List of text models to test in the benchmark
 TEXT_MODELS = [
     "llama3.2:3b",
@@ -23,6 +21,8 @@ TEXT_MODELS = [
     "deepseek-r1:8b",
     "gemma2:9b",
 ]
+# set a limit to keep only the most recent benchmark run files (older ones will be deleted)
+MAX_RUN_FILES = 15
 
 # Standard test prompt to evaluate structure, explanation, and speed
 # (You can change this to any prompt that fits your personality and interests!)
@@ -36,9 +36,7 @@ TEST_PROMPT = (
     "End with a motivational quote about an encouraging quote!"
 )
 
-# ==============================================================================
-# BENCHMARK FUNCTION
-# ==============================================================================
+
 # This function runs the benchmark test by looping through each model, 
 # feeding it the test prompt and adding results to a comparison display table
 def run_benchmark():
@@ -99,6 +97,7 @@ def run_benchmark():
     print(" BENCHMARK RESULTS")
     print("=" * 70)
     headers = ["Model", "VRAM Load Time", "Total Time", "Tokens Generated", "Generation Speed"]
+
     # tablefmt="github" formats the table using Markdown pipe syntax (| --- |) so it can be pasted into GitHub
     table_output = tabulate(results_table, headers=headers, tablefmt="github")
     print(table_output)
@@ -113,13 +112,14 @@ def run_benchmark():
         print(text)
         print("-" * 50)
 
-    # ==========================================================================
-    # SAVE RESULTS TO A FILE (Never lose outputs to terminal buffer limits)
-    # ==========================================================================
-    output_filename = "benchmark_run_latest.md"
+    # Save each run separately to avoid losing output to terminal scrollback.
+    run_time = datetime.now().astimezone()
+    timestamp = run_time.strftime("%Y%m%d_%H%M%S_%f_%Z")
+    output_filename = f"benchmark_run_{timestamp}.md"
     try:
         with open(output_filename, "w", encoding="utf-8") as f:
             f.write(f"# Benchmark Run Results\n\n")
+            f.write(f"**Run time**: {run_time.strftime('%Y-%m-%d %H:%M:%S %Z')}\n\n")
             f.write(f"**Prompt**: \"{TEST_PROMPT}\"\n\n")
             f.write(f"## Performance Summary\n\n")
             f.write(table_output + "\n\n")
@@ -129,12 +129,30 @@ def run_benchmark():
                 f.write(text + "\n\n")
                 f.write("---\n\n")
         print(f"\n[+] Results successfully saved to: {output_filename}")
+
+    # If error occurs while saving results, print failure message and return
     except Exception as e:
         print(f"\n[-] Failed to save results file: {e}")
+        return
 
-# ==============================================================================
-# SCRIPT ENTRYPOINT
-# ==============================================================================
+    # Remove older benchmark run files if they exceed the MAX_RUN_FILES limit
+    try:
+        run_files = sorted(
+            Path.cwd().glob("benchmark_run_????????_??????_??????_*.md"),
+            key=lambda path: path.stat().st_mtime,
+            reverse=True,
+        )
+        legacy_report = Path("benchmark_run_latest.md")
+        if legacy_report.is_file():
+            run_files.append(legacy_report)
+        for old_file in run_files[MAX_RUN_FILES:]:
+            old_file.unlink()
+        if len(run_files) > MAX_RUN_FILES:
+            print(f"[+] Removed {len(run_files) - MAX_RUN_FILES} older benchmark run file(s).")
+    except OSError as e:
+        print(f"\n[-] Could not remove older benchmark run files: {e}")
+
+
 # when this file is run as a script, call the main function
 if __name__ == "__main__":
     run_benchmark()

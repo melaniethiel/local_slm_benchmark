@@ -1,3 +1,5 @@
+# Findings: This is the initial test result from my first run. I identified that mistral appeared to have two #2, but looking closer, it appears mistral cut off on row 33 (pro... is a partial word) and then it appears to start printing results from llama3.1:8b. This is what caused me to add the printing of results to avoid terminal limits.
+
 # Benchmark Results
 
 | Model | VRAM Load Time | Total Time | Tokens Generated | Generation Speed |

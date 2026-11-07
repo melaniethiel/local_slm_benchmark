@@ -37,6 +37,7 @@ To see how different model sizes and specialties perform on the same computer, I
 | `llava:7b` | LLaVA Team | Detailed Image Understanding & Visual Q&A |
 
 ### Model Categories
+
 - **Fast small model**: `llama3.2:3b` — lightweight baseline to see speed differences
 - **Flagship general-purpose models**: `llama3.1:8b`, `mistral:7b`, `gemma2:9b` — direct comparison of leading 7B–9B models
 - **Reasoning models**: `deepseek-r1:8b` — step-by-step reasoning using `<think>` tags
@@ -55,7 +56,6 @@ This project highlights core skills in:
 
 ## Current status
 
-This version establishes the working benchmark tool (**v0.2**):
 - Ollama installed and running on Windows
 - selected test models downloaded and verified
 - `benchmark.py` automated script created with automatic Markdown file exports
@@ -76,11 +76,12 @@ From initial runs on a Windows desktop with 8 GB VRAM:
 | **`gemma2:9b`** | ~18.5s | **~18.5 tok/s** | High memory pressure; pushing the 8 GB VRAM limit cuts generation speed in half. |
 
 ### Key Lessons Learned
+
 1. **The Cold-Start Effect**: The very first run took ~35 seconds to load the model into VRAM as the GPU initialized. On subsequent runs, load time dropped to ~6.5 seconds.
 2. **Model Size vs. Speed**: Hardware memory bandwidth strictly dictates speed. The 3B model generates at ~69 tokens/sec, almost exactly double the ~37 tokens/sec of the 7B–8B models.
 3. **Reasoning Token Expansion**: On complex prompts (like explaining long division), DeepSeek-R1 generated 1,379 tokens compared to 400–600 tokens from standard models. Its tokens/sec rate remained steady (~34 tok/s), but total response time was higher because of its internal reasoning process.
 4. **8 GB VRAM Boundary**: The 9B model (`gemma2:9b`) ran at half the speed (~18 tok/s) of 7B–8B models due to tight GPU memory margins and heavier attention architectures.
-5. **Terminal Scrollback Limits**: Printing multiple long model outputs in a terminal can exceed scrollback limits and clip text; saving benchmark results directly to files (`benchmark_run_latest.md` and `initial tests.txt`) ensures complete data capture.
+5. **Terminal Scrollback Limits**: Printing multiple long model outputs in a terminal can exceed scrollback limits and clip text; saving benchmark results directly to files (`benchmark_run_*.md` and `initial tests.txt`) ensures complete data capture.
 
 ## Tech stack
 
@@ -108,16 +109,14 @@ From initial runs on a Windows desktop with 8 GB VRAM:
 1. Ollama runs in the background as a local service on its default port (`http://localhost:11434`).
 2. The Python script connects to Ollama and sends test prompts to each model.
 3. The script records how long each model took to reply and how many tokens per second it generated.
-4. Results are printed in a clean comparison table in the terminal.
+4. Results for all tested models are printed in a comparison table and saved to a timestamped `benchmark_run_*.md` file using the computer's local time zone. Each run creates a new file, and the 15 most recent run files are kept; older run files are deleted.
 5. Everything runs locally on the graphics card with no internet connection required during testing.
 
 ## Roadmap
 
 Planned milestones for future versions include:
-- writing the first Python benchmark script to test response speed
 - creating standard test prompts for general knowledge, reasoning, and coding
 - adding image testing for `moondream` and `llava:7b`
-- saving test results to CSV or JSON files for easy review
 - adding simple charts to compare tokens per second across models
 - adding command-line options to run specific models or test categories
 
