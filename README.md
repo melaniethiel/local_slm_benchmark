@@ -81,7 +81,7 @@ From initial runs on a Windows desktop with 8 GB VRAM:
 2. **Model Size vs. Speed**: Hardware memory bandwidth strictly dictates speed. The 3B model generates at ~69 tokens/sec, almost exactly double the ~37 tokens/sec of the 7B–8B models.
 3. **Reasoning Token Expansion**: On complex prompts (like explaining long division), DeepSeek-R1 generated 1,379 tokens compared to 400–600 tokens from standard models. Its tokens/sec rate remained steady (~34 tok/s), but total response time was higher because of its internal reasoning process.
 4. **8 GB VRAM Boundary**: The 9B model (`gemma2:9b`) ran at half the speed (~18 tok/s) of 7B–8B models due to tight GPU memory margins and heavier attention architectures.
-5. **Terminal Scrollback Limits**: Printing multiple long model outputs in a terminal can exceed scrollback limits and clip text; saving benchmark results directly to files (`benchmark_run_*.md`) ensures complete data capture.
+5. **Terminal Scrollback Limits**: Printing multiple long model outputs in a terminal can exceed scrollback limits and clip text; saving benchmark results directly to files (`benchmark_run_*.md` and `initial tests.txt`) ensures complete data capture.
 
 ## Tech stack
 
