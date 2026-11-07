@@ -31,12 +31,28 @@ The goal is not just to run models, but to show steady growth in practical softw
 
 ---
 
-## Planned future versions
+## v0.2 - Automated benchmark script, speed tracking, and file saving
 
-### v0.2 - Basic benchmark script and speed tracking
-- write a Python script using the `ollama` library to test models
-- measure response time, total tokens, and tokens per second
-- print clean comparison tables in the terminal
+### Added
+- `benchmark.py` automated script using the official `ollama` Python library
+- latency and performance tracking: VRAM load time, total duration, tokens generated, and generation speed (tokens/sec)
+- automatic markdown export (`benchmark_run_latest.md`) to prevent terminal scrollback truncation
+- `initial tests.txt` capturing full outputs and benchmark metrics across 3 initial test runs
+- documented empirical hardware findings in `README.md` (cold start latency, 3B vs 8B throughput, DeepSeek reasoning token counts, and 9B VRAM boundaries)
+
+### Purpose
+- move from manual CLI testing to reproducible programmatic evaluation
+- measure physical hardware constraints and generation speeds accurately
+- preserve all model responses without relying solely on terminal buffers
+
+### Notes
+- `llama3.2:3b` achieved ~69 tokens/sec, nearly double the ~37 tokens/sec rate of 7B–8B models
+- `deepseek-r1:8b` demonstrated significant token expansion (1,379 tokens) due to step-by-step `<think>` reasoning
+- `gemma2:9b` experienced reduced speed (~18 tokens/sec) due to memory pressure on an 8 GB graphics card
+
+---
+
+## Planned future versions
 
 ### v0.3 - Multi-category test prompts and vision testing
 - test models on a standard set of prompts for coding, reasoning, and general questions

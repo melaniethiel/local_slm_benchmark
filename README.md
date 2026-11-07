@@ -55,11 +55,32 @@ This project highlights core skills in:
 
 ## Current status
 
-This version establishes the foundation:
+This version establishes the working benchmark tool (**v0.2**):
 - Ollama installed and running on Windows
 - selected test models downloaded and verified
-- Python virtual environment and project structure set up
-- initial documentation and version history created
+- `benchmark.py` automated script created with automatic Markdown file exports
+- initial 3 benchmark runs completed across productivity and math prompts
+- real-world findings documented on cold-starts, VRAM scaling, and reasoning token generation
+
+## Benchmark findings & key takeaways
+
+From initial runs on a Windows desktop with 8 GB VRAM:
+
+| Model | Avg Load Time (Warm) | Generation Speed | Archetype Performance |
+| :--- | :--- | :--- | :--- |
+| **`llama3.2:3b`** | ~6.5s | **~69.3 tok/s** | Extremely fast; nearly 2x the speed of 7B–8B models. Best for low latency. |
+| **`qwen2.5-coder:7b`** | ~13.6s | **~38.2 tok/s** | Very consistent throughput; structured and concise outputs. |
+| **`mistral:7b`** | ~12.4s | **~38.5 tok/s** | Fast, direct, and concise; reliable general-purpose instruction following. |
+| **`llama3.1:8b`** | ~14.3s | **~36.2 tok/s** | Well-balanced responses, steady generation rate. |
+| **`deepseek-r1:8b`** | ~15.0s | **~34.0 tok/s** | Steady generation speed, but generates 2x–3x more tokens due to internal `<think>` reasoning. |
+| **`gemma2:9b`** | ~18.5s | **~18.5 tok/s** | High memory pressure; pushing the 8 GB VRAM limit cuts generation speed in half. |
+
+### Key Lessons Learned
+1. **The Cold-Start Effect**: The very first run took ~35 seconds to load the model into VRAM as the GPU initialized. On subsequent runs, load time dropped to ~6.5 seconds.
+2. **Model Size vs. Speed**: Hardware memory bandwidth strictly dictates speed. The 3B model generates at ~69 tokens/sec, almost exactly double the ~37 tokens/sec of the 7B–8B models.
+3. **Reasoning Token Expansion**: On complex prompts (like explaining long division), DeepSeek-R1 generated 1,379 tokens compared to 400–600 tokens from standard models. Its tokens/sec rate remained steady (~34 tok/s), but total response time was higher because of its internal reasoning process.
+4. **8 GB VRAM Boundary**: The 9B model (`gemma2:9b`) ran at half the speed (~18 tok/s) of 7B–8B models due to tight GPU memory margins and heavier attention architectures.
+5. **Terminal Scrollback Limits**: Printing multiple long model outputs in a terminal can exceed scrollback limits and clip text; saving benchmark results directly to files (`benchmark_run_latest.md` and `initial tests.txt`) ensures complete data capture.
 
 ## Tech stack
 
