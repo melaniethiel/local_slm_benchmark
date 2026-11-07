@@ -36,8 +36,7 @@ The goal is not just to run models, but to show steady growth in practical softw
 ### Added
 - `benchmark.py` automated script using the official `ollama` Python library
 - latency and performance tracking: VRAM load time, total duration, tokens generated, and generation speed (tokens/sec)
-- automatic markdown export (`benchmark_run_latest.md`) to prevent terminal scrollback truncation
-- `initial tests.txt` capturing full outputs and benchmark metrics across 3 initial test runs
+- automatic timestamped Markdown exports to prevent terminal scrollback truncation
 - documented empirical hardware findings in `README.md` (cold start latency, 3B vs 8B throughput, DeepSeek reasoning token counts, and 9B VRAM boundaries)
 
 ### Purpose

@@ -32,8 +32,8 @@ MAX_RUN_FILES = 15
 #)
 
 TEST_PROMPT = (
-    "Give me steps on how to teach a middle-school student how to do long division "
-    "End with a motivational quote about an encouraging quote!"
+    "Explain how to teach long division to a middle-school student. "
+    "End with an encouraging quote."
 )
 
 
